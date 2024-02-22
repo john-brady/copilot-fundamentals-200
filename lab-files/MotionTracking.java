@@ -37,6 +37,7 @@ public class MotionTrackingActivity extends Activity {
     private RajawaliSurfaceView mSurfaceView;
     private MotionTrackingRajawaliRenderer mRenderer;
     private TangoConfig mConfig;
+    private Tango mTango; // Added Tango object
 
     private AtomicBoolean mIsTangoPoseReady = new AtomicBoolean(false);
     private int mDisplayRotation = 0;
@@ -70,13 +71,13 @@ public class MotionTrackingActivity extends Activity {
     }
 
     private void initializeTango() {
-        Tango tango = new Tango(MotionTrackingActivity.this, new Runnable() {
+        mTango = new Tango(MotionTrackingActivity.this, new Runnable() {
             @Override
             public void run() {
                 synchronized (MotionTrackingActivity.this) {
                     try {
                         mConfig = setupTangoConfig();
-                        TangoSupport.initialize(tango);
+                        TangoSupport.initialize(mTango); // Updated TangoSupport.initialize() argument
                         mIsTangoPoseReady.set(true);
                         setDisplayRotation();
                     } catch (TangoOutOfDateException e) {
@@ -96,7 +97,7 @@ public class MotionTrackingActivity extends Activity {
     }
 
     private TangoConfig setupTangoConfig() {
-        TangoConfig config = tango.getConfig(TangoConfig.CONFIG_TYPE_DEFAULT);
+        TangoConfig config = mTango.getConfig(TangoConfig.CONFIG_TYPE_DEFAULT); // Updated tango.getConfig() argument
         config.putBoolean(TangoConfig.KEY_BOOLEAN_MOTIONTRACKING, true);
         config.putBoolean(TangoConfig.KEY_BOOLEAN_AUTORECOVERY, true);
         return config;
